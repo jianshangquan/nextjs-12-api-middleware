@@ -3,7 +3,8 @@ import { RouterCallback } from "./method-routes-middleware";
 
 
 
-export function withMiddleware(next: RouterCallback[] = []) {
+type onErrorCallback = (error: any, req: any, res: any) => void;
+export function withMiddleware(next: RouterCallback[] = [], onError: onErrorCallback | null) {
 
     return async function nextJSMiddleware(req: any, res: any) {
 
@@ -18,6 +19,10 @@ export function withMiddleware(next: RouterCallback[] = []) {
                 });
             } catch (e) {
                 console.log('General error ', e)
+                if(onError){
+                    return onError(e, req, res);
+                }
+
                 return res.status(500).send({
                     status: 'Failed',
                     message: 'Unknown error occured',
@@ -31,6 +36,10 @@ export function withMiddleware(next: RouterCallback[] = []) {
             await nextFun(req, res);
         } catch (err) {
             console.log('General error ', err)
+            if(onError){
+                return onError(err, req, res);
+            }
+
             return res.status(500).send({
                 status: 'Failed',
                 message: 'Unknown error occured',

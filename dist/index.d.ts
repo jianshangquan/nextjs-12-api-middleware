@@ -22,7 +22,8 @@ declare class MethodRouter {
 
 declare function PreflightMiddleware(req: any, res: any, next: RouteNextFunction): void;
 
-declare function withMiddleware(next?: RouterCallback[]): (req: any, res: any) => Promise<any>;
+type onErrorCallback = (error: any, req: any, res: any) => void;
+declare function withMiddleware(next: RouterCallback[] | undefined, onError: onErrorCallback | null): (req: any, res: any) => Promise<any>;
 declare function isPromiseFunction(func: any): boolean;
 
 declare function withRequestMethod(method: HttpMethods[] | undefined, callback: RouterCallback): (req: any, res: any, next: any) => Promise<void>;
